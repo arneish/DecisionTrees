@@ -1,9 +1,10 @@
 """
-This file gives you the code to read the data into numpy arrays to get you startedf for part (a).
+This file gives you the code to read the data into numpy arrays to get you started for part (a).
 """
 from __future__ import print_function
 import time,sys,statistics,csv
 import numpy as np
+import pickle
 
 ## The possible attributes in the data with the prediction at index 0. Smaller names for brevity.
 attributes = ["rich","age","wc","fnlwgt","edu","edun","mar","occ","rel","race","sex","capg","canpl","hpw","nc"]
@@ -27,8 +28,19 @@ encode = {
     "race"   : {race_l[i]:i for i in range(len(race_l))},
     "sex"    : {sex_l[i]:i for i in range(len(sex_l))},
     "nc"     : {nc_l[i]:i for i in range(len(nc_l))},
-    }
+}
+print(len(wc_l))
+print(len(edu_l))
+print(len(mar_l))
+print(len(occ_l))
+print(len(rel_l))
+print(len(race_l))
+print(len(sex_l))
+print(len(nc_l))
 
+
+
+#medians for the NUMERICAL ATTRIBUTES
 def medians(file):
     """
     Given a csv file, find the medians of the categorical attributes for the whole data.
@@ -57,7 +69,7 @@ def medians(file):
 
 def preprocess(file):
     """
-    Given a file, read its data by encoding categorical attributes and binarising continuos attributes based on median.
+    Given a file, read its data by encoding categorical attributes and binarising continuoUs attributes based on median.
     params(1): 
         file : string : the name of the file
     outputs(6):
@@ -78,19 +90,30 @@ def preprocess(file):
         t = [0 for i in range(15)]
         
         # Encode the categorical attributes
-        t[0] = encode["rich"][l[-1]]; t[2] = encode["wc"][l[1]]; t[4] = encode["edu"][l[3]]
-        t[6] = encode["mar"][l[5]]; t[7] = encode["occ"][l[6]]; t[8] = encode["rel"][l[7]]
-        t[9] = encode["race"][l[8]]; t[10] = encode["sex"][l[9]]; t[14] = encode["nc"][l[13]]
+        t[0] = encode["rich"][l[-1]]
+        t[2] = encode["wc"][l[1]]
+        t[4] = encode["edu"][l[3]]
+        t[6] = encode["mar"][l[5]]
+        t[7] = encode["occ"][l[6]]
+        t[8] = encode["rel"][l[7]]
+        t[9] = encode["race"][l[8]] 
+        t[10] = encode["sex"][l[9]]
+        t[14] = encode["nc"][l[13]]
         
         # Binarize the numerical attributes based on median.
         # Modify this section to read the file in part c where you split the continuos attributes baed on dynamic median values.
-        t[1] = float(l[0])>=agem; t[3] = float(l[2])>=fnlwgtm; t[5] = float(l[4])>=edunm;
-        t[11] = float(l[10])>=capgm; t[12] = float(l[11])>=caplm; t[13] = float(l[12])>=hpwm;
+        t[1] = float(l[0])>=agem
+        t[3] = float(l[2])>=fnlwgtm
+        t[5] = float(l[4])>=edunm
+        t[11] = float(l[10])>=capgm
+        t[12] = float(l[11])>=caplm
+        t[13] = float(l[12])>=hpwm
         
         # Convert some of the booleans to ints
         data.append([int(x) for x in t])
     
     return np.array(data,dtype=np.int64)
+
 
 ## Read the data
 train_data = preprocess("train.csv")
@@ -98,3 +121,16 @@ valid_data = preprocess("valid.csv")
 test_data = preprocess("test.csv")
 
 print("The sizes are ","Train:",len(train_data),", Validation:",len(valid_data),", Test:",len(test_data))
+# pickle_out = open ("data.pickle", "wb")
+# pickle.dump(train_data, pickle_out)
+# pickle.dump(valid_data, pickle_out)
+# pickle.dump(test_data, pickle_out)
+# pickle_out.close()
+#print(valid_data[0])
+pickle_in = open("data.pickle", "rb")
+tr = pickle.load(pickle_in)
+va = pickle.load(pickle_in)
+te = pickle.load(pickle_in)
+print (tr[0]==train_data[0])
+print (va[0] == valid_data[0])
+print (te[0]==test_data[0])
